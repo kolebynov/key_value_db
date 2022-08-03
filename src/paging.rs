@@ -83,7 +83,7 @@ impl Page {
 }
 
 impl ReadableWritable for Page {
-    fn read_from_buffer(read_action: impl FnOnce(&mut [u8]) -> Result<Self>) -> Result<Self> {
+    fn read_to_buffer(read_action: impl FnOnce(&mut [u8]) -> Result<Self>) -> Result<Self> {
         let mut buffer = [0; size_of::<Self>()];
         read_action(&mut buffer)
     }
@@ -133,7 +133,7 @@ impl Display for BlockAddress {
 }
 
 impl ReadableWritable for BlockAddress {
-    fn read_from_buffer(read_action: impl FnOnce(&mut [u8]) -> Result<Self>) -> Result<Self> {
+    fn read_to_buffer(read_action: impl FnOnce(&mut [u8]) -> Result<Self>) -> Result<Self> {
         let mut buffer = [0; size_of::<Self>()];
         read_action(&mut buffer)
     }
@@ -146,7 +146,7 @@ struct PagesHeader {
 }
 
 impl ReadableWritable for PagesHeader {
-    fn read_from_buffer(read_action: impl FnOnce(&mut [u8]) -> Result<Self>) -> Result<Self> {
+    fn read_to_buffer(read_action: impl FnOnce(&mut [u8]) -> Result<Self>) -> Result<Self> {
         let mut buffer = [0; size_of::<Self>()];
         read_action(&mut buffer)
     }

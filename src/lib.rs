@@ -157,7 +157,7 @@ struct DbSystemInfo {
 }
 
 impl ReadableWritable for DbSystemInfo {
-    fn read_from_buffer(read_action: impl FnOnce(&mut [u8]) -> Result<Self>) -> Result<Self> {
+    fn read_to_buffer(read_action: impl FnOnce(&mut [u8]) -> Result<Self>) -> Result<Self> {
         let mut buffer = [0; size_of::<Self>()];
         read_action(&mut buffer)
     }
@@ -177,7 +177,7 @@ impl RecordHeader {
 }
 
 impl ReadableWritable for RecordHeader {
-    fn read_from_buffer(read_action: impl FnOnce(&mut [u8]) -> Result<Self>) -> Result<Self> {
+    fn read_to_buffer(read_action: impl FnOnce(&mut [u8]) -> Result<Self>) -> Result<Self> {
         let mut buffer = [0; size_of::<Self>()];
         read_action(&mut buffer)
     }

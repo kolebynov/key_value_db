@@ -6,7 +6,7 @@ pub trait ReadableWritable : Sized + Clone {
     }
 
     fn read(reader: &mut impl Read) -> Result<Self> {
-        Self::read_from_buffer(|buffer| {
+        Self::read_to_buffer(|buffer| {
             reader.read_exact(buffer)?;
             unsafe { Ok(buffer.as_ptr().cast::<Self>().as_ref().unwrap().clone()) }
         })
@@ -18,7 +18,7 @@ pub trait ReadableWritable : Sized + Clone {
         Ok(())
     }
 
-    fn read_from_buffer(read_action: impl FnOnce(&mut [u8]) -> Result<Self>) -> Result<Self>;
+    fn read_to_buffer(read_action: impl FnOnce(&mut [u8]) -> Result<Self>) -> Result<Self>;
 }
 
 pub trait ReadStructure : Read + Sized {
