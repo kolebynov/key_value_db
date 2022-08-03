@@ -87,28 +87,6 @@ impl ReadableWritable for Page {
         let mut buffer = [0; size_of::<Self>()];
         read_action(&mut buffer)
     }
-//     fn read(reader: &mut impl Read) -> Result<Self> {
-//         let first_free_block = reader.read_u8()?;
-
-//         let mut block_states = [BlockState::Free as u8; PAGE_BLOCK_COUNT];
-//         reader.read_exact(&mut block_states)?;
-
-//         let mut blocks = [0; PAGE_PAYLOAD_SIZE];
-//         reader.read_exact(&mut blocks)?;
-
-//         Ok(Page { first_free_block, block_states, blocks })
-//     }
-
-//     fn write(&self, writer: &mut impl Write) -> Result<()> {
-//         writer.write_u8(self.first_free_block)?;
-//         writer.write_all(&self.block_states)?;
-//         writer.write_all(&self.blocks)?;
-//         Ok(())
-//     }
-
-//     fn size_in_buffer() -> usize {
-//         PAGE_SIZE
-//     }
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -159,22 +137,6 @@ impl ReadableWritable for BlockAddress {
         let mut buffer = [0; size_of::<Self>()];
         read_action(&mut buffer)
     }
-//     fn read(reader: &mut impl Read) -> Result<Self> {
-//         let page_index = reader.read_i32::<LittleEndian>()?;
-//         let block_index = reader.read_u8()?;
-
-//         Ok(BlockAddress::new(page_index, block_index))
-//     }
-
-//     fn write(&self, writer: &mut impl Write) -> Result<()> {
-//         writer.write_i32::<LittleEndian>(self.page_index)?;
-//         writer.write_u8(self.block_index)?;
-//         Ok(())
-//     }
-
-//     fn size_in_buffer() -> usize {
-//         BlockAddress::size_in_buffer()
-//     }
 }
 
 #[derive(Default, Clone)]
@@ -184,19 +146,6 @@ struct PagesHeader {
 }
 
 impl ReadableWritable for PagesHeader {
-    // fn read(reader: &mut impl Read) -> Result<Self> {
-    //     Ok(PagesHeader { first_page_with_free_blocks: reader.read_i32::<LittleEndian>()? })
-    // }
-
-    // fn write(&self, writer: &mut impl Write) -> Result<()> {
-    //     writer.write_i32::<LittleEndian>(self.first_page_with_free_blocks)?;
-    //     Ok(())
-    // }
-
-    // fn size_in_buffer() -> usize {
-    //     4
-    // }
-
     fn read_from_buffer(read_action: impl FnOnce(&mut [u8]) -> Result<Self>) -> Result<Self> {
         let mut buffer = [0; size_of::<Self>()];
         read_action(&mut buffer)

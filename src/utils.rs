@@ -5,15 +5,15 @@ pub trait ReadableWritable : Sized + Clone {
         size_of::<Self>()
     }
 
-    unsafe fn read(reader: &mut impl Read) -> Result<Self> {
+    fn read(reader: &mut impl Read) -> Result<Self> {
         Self::read_from_buffer(|buffer| {
             reader.read_exact(buffer)?;
-            Ok(buffer.as_ptr().cast::<Self>().as_ref().unwrap().clone())
+            unsafe { Ok(buffer.as_ptr().cast::<Self>().as_ref().unwrap().clone()) }
         })
     }
 
-    unsafe fn write(&self, writer: &mut impl Write) -> Result<()> {
-        let slice = slice::from_raw_parts((self as *const Self) as *const u8, size_of::<Self>());
+    fn write(&self, writer: &mut impl Write) -> Result<()> {
+        let slice = unsafe { slice::from_raw_parts((self as *const Self) as *const u8, size_of::<Self>()) };
         writer.write_all(slice)?;
         Ok(())
     }
@@ -23,27 +23,27 @@ pub trait ReadableWritable : Sized + Clone {
 
 pub trait ReadStructure : Read + Sized {
     fn read_structure<T: ReadableWritable>(&mut self) -> Result<T> {
-        unsafe { T::read(self) }
+        T::read(self)
     }
 }
 
 pub trait ReadStructurePos : Read + Seek + Sized {
     fn read_structure_from_pos<T: ReadableWritable>(&mut self, position: u64) -> Result<T> {
         self.seek(SeekFrom::Start(position))?;
-        unsafe { T::read(self) }
+        T::read(self)
     }
 }
 
 pub trait WriteStructure : Write + Sized {
     fn write_structure<T: ReadableWritable>(&mut self, structure: &T) -> Result<()> {
-        unsafe { structure.write(self) }
+        structure.write(self)
     }
 }
 
 pub trait WriteStructurePos : Write + Seek + Sized {
     fn write_structure_to_pos<T: ReadableWritable>(&mut self, position: u64, structure: &T) -> Result<()> {
         self.seek(SeekFrom::Start(position))?;
-        unsafe { structure.write(self) }
+        structure.write(self)
     }
 }
 
@@ -68,7 +68,7 @@ impl ArrayStructReaderWriter for [u8] {
         }
 
         let mut cursor = Cursor::new(self);
-        unsafe { T::read(&mut cursor) }.unwrap()
+        T::read(&mut cursor).unwrap()
     }
 
     fn write_structure<T: ReadableWritable>(&mut self, structure: &T) {
@@ -77,6 +77,6 @@ impl ArrayStructReaderWriter for [u8] {
         }
 
         let mut cursor = Cursor::new(self);
-        unsafe { structure.write(&mut cursor) }.unwrap();
+        structure.write(&mut cursor).unwrap();
     }
 }

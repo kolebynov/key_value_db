@@ -161,23 +161,6 @@ impl ReadableWritable for DbSystemInfo {
         let mut buffer = [0; size_of::<Self>()];
         read_action(&mut buffer)
     }
-//     fn size_in_buffer() -> usize {
-//         BlockAddress::size_in_buffer() * 2
-//     }
-
-//     fn read(reader: &mut impl std::io::Read) -> Result<Self> {
-//         let first_record = reader.read_structure()?;
-//         let last_record = reader.read_structure()?;
-
-//         Ok(DbSystemInfo { first_record, last_record })
-//     }
-
-//     fn write(&self, writer: &mut impl std::io::Write) -> Result<()> {
-//         writer.write_structure(&self.first_record)?;
-//         writer.write_structure(&self.last_record)?;
-
-//         Ok(())
-//     }
 }
 
 #[derive(Clone)]
